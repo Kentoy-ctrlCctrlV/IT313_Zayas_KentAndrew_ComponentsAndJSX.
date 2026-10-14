@@ -1,56 +1,55 @@
-# Welcome to your Expo app 👋
+# IT 313 Lab 4: React Components & JSX in Action
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This Expo app demonstrates reusable React Native components, props, JSX, and list rendering with a small student roster.
 
-## Get started
+## The roster problem
 
-1. Install dependencies
+The screen displays four students enrolled in IT313, including their units and whether they have a full load. Repeating the same card markup for every student would be difficult to maintain, so the roster uses one reusable card component and a data array.
 
-   ```bash
-   npm install
-   ```
+## Components and React concepts
 
-2. Start the app
+- **Functional components:** `StudentCard` and `StudentRoster` are JavaScript functions that return JSX to describe the interface.
+- **Props and destructuring:** `StudentCard` receives `name`, `course`, `units`, and `isFullLoad` as props. Its function parameters destructure those values so they can be used directly.
+- **JSX expressions:** Curly braces insert JavaScript values into JSX, for example `{students.length}` and `{displayedStudents.map(...)}`.
+- **Conditional rendering:** `{isFullLoad && <Text>Full Load</Text>}` displays the label only when that student's `isFullLoad` value is true.
+- **`.map()`:** `StudentRoster` maps the student array to one `StudentCard` per student.
+- **The `key` prop:** Every card uses its stable student ID as its key. React uses keys to match list items across renders.
 
-   ```bash
-   npx expo start
-   ```
+The full-load label appears for Ana Cruz and Cid Ramos only. The student count is read from `students.length`, rather than entered as a separate fixed value.
 
-In the output, you'll find options to open the app in a
+## Reverse Roster
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Press **Reverse Roster** to reverse the displayed order. The handler creates a copy of the current array before calling `.reverse()`, so the original starter `students` array is not changed. Press the button again to return to the initial order.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Run the app
 
-## Get a fresh project
-
-When you're ready, run:
+Node.js and npm should be installed. From the project folder in the VS Code terminal, install dependencies if needed and start Expo:
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Scan the terminal QR code with Expo Go on a compatible device. To use an installed emulator, start it first and press `a` for Android or `i` for iOS in the Expo terminal. On Windows, Android emulator or Expo Go on a physical device are the typical options; the iOS simulator requires macOS.
 
-### Other setup steps
+## Demonstrate the key experiment
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+The roster currently uses `key={student.id}` in `components/StudentRoster.js`. Near the map callback, a code comment marks where to try the experiment:
 
-## Learn more
+1. Temporarily change the callback from `.map((student) => ...)` to `.map((student, index) => ...)`.
+2. Change `key={student.id}` to `key={index}`.
+3. Run the app and press **Reverse Roster**. Notice how the displayed sequence changes.
+4. Restore `.map((student) => ...)` and `key={student.id}` when finished.
 
-To learn more about developing your project with Expo, look at the following resources:
+Index keys do not guarantee an obvious bug in this example. The cards have no local state, so the reversal may look correct either way. Problems can occur when items change order or are inserted/removed and each item has its own state: an index identifies a position, not the student. Stable IDs let React keep each item associated with the correct student.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project files
 
-## Join the community
+- `components/StudentCard.js` renders one student's information and optional full-load label.
+- `components/StudentRoster.js` owns the roster data, count, list rendering, and reverse button.
+- `src/app/index.tsx` connects the roster to the existing Expo Router Home tab.
+- `src/app/_layout.tsx` and the tab configuration remain part of the existing Expo Router setup.
 
-Join our community of developers creating universal apps.
+## GitHub submission
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Create a **public** GitHub repository named `IT313_LastName_FirstName_ComponentsAndJSX`, replacing `LastName` and `FirstName` with your actual name, then push this project to it.
